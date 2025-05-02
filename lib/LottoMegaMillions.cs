@@ -13,7 +13,7 @@ namespace LottoTryDataJob.Lib
     {
         public LottoMegaMillions(LottoDb lottoDbContext) : base(lottoDbContext)
         {
-            Driver.Url = "http://www.megamillions.com/winning-numbers";           
+            Driver.Url = "http://www.megamillions.com";           
         }
 
         private string searchDrawDate()
@@ -38,12 +38,12 @@ namespace LottoTryDataJob.Lib
         {
             var list = db.MegaMillions.ToList();
             IList<Tuple<int, string>> dates = list.Select(x => new Tuple<int, string>(x.DrawNumber, x.DrawDate)).ToList();
-            var lastDrawDate = dates.LastOrDefault().Item2;
+            var lastDrawDate = dates.Last().Item2;
             var currentDrawDate = searchDrawDate();
 
             if (DateTime.Parse(currentDrawDate) > DateTime.Parse(lastDrawDate))
             {
-                var lastDrawNumber = dates.LastOrDefault().Item1;
+                var lastDrawNumber = dates.Last().Item1;
                 var numbers = searchDrawNumbers();
 
                 var entity = new MegaMillion();

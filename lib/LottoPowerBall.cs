@@ -11,15 +11,16 @@ namespace LottoTryDataJob.Lib
     {
         public LottoPowerBall(LottoDb lottoDbContext) : base(lottoDbContext)
         {
-            Driver.Url = "https://www.powerball.com/games/powerball";           
+            Driver.Url = "https://www.powerball.com/";           
         }
 
         private string searchDrawDate()
         {
 
-            var divs = Driver.FindElements(By.ClassName("field_draw_date"));
-            var dat = divs.First().Text.Split();                       
-            var da = dat[5] + "-" + DicDateShort[dat[3]] + "-" + dat[4].Trim(',');
+            var divs = Driver.FindElements(By.ClassName("title-date"));
+            var dat = divs.FirstOrDefault()?.Text.Split(',');   
+            var monthDay = dat[1].Split();
+            var da = DicDateShort[monthDay[1].Trim()] + "/" + monthDay[2].Trim() + "/" + dat[2].Trim();
             return da;
         }
 
@@ -27,7 +28,7 @@ namespace LottoTryDataJob.Lib
         {
             List<string> numbers = new List<string>();           
 
-            var balls = Driver.FindElements(By.ClassName("numbers-ball")).Where(x => !string.IsNullOrEmpty(x.Text));
+            var balls = Driver.FindElements(By.ClassName("item-powerball")).Where(x => !string.IsNullOrEmpty(x.Text));
             foreach (var ball in balls.Take(6))
             {
                 
@@ -40,12 +41,12 @@ namespace LottoTryDataJob.Lib
         {
             var list = db.PowerBalls.ToList();
             IList<Tuple<int, string>> dates = list.Select(x => new Tuple<int, string>(x.DrawNumber, x.DrawDate)).ToList();
-            var lastDrawDate = dates.LastOrDefault().Item2;
+            var lastDrawDate = dates.Last().Item2;
             var currentDrawDate = searchDrawDate();
 
             if (DateTime.Parse(currentDrawDate) > DateTime.Parse(lastDrawDate))
             {
-                var lastDrawNumber = dates.LastOrDefault().Item1;
+                var lastDrawNumber = dates.Last().Item1;
                 var numbers = searchDrawNumbers();
 
                 var entity = new PowerBall();

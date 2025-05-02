@@ -7,7 +7,7 @@ namespace LottoTryDataJob
     using System;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
-    internal class SeleniumJob
+    public class SeleniumJob
     {
         private readonly LottoDb _context;
         private readonly ILogger<SeleniumJob> _logger;
@@ -57,6 +57,13 @@ namespace LottoTryDataJob
 
                     obj = new LottoEuroJackpot(_context);
                     obj.InsertDb();
+
+                    obj = new LottoPowerBall(_context);
+                    obj.InsertDb();
+
+                    obj = new LottoMegaMillions(_context);
+                    obj.InsertDb();
+
 
                     obj.CloseDriver();
 
