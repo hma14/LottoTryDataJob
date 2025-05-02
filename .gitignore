@@ -1,7 +1,7 @@
 ﻿# Build artifacts
 /Program.cs
 
-/Deploy/LottoDataService/
+/Deploy/LottoTryDataService/
 
 bin/
 obj/
