@@ -43,14 +43,15 @@ namespace LottoTryDataJob
                     obj = new Lottery649(_context);
                     obj.InsertDb();
 
-                    obj = new LottoColorado(_context);
+                    obj = new LottoPowerBall(_context);
                     obj.InsertDb();
+
+                    obj = new LottoMegaMillions(_context);
+                    obj.InsertDb();                   
 
                     obj = new LottoGermanLotto(_context);
                     obj.InsertDb();
-
-                    //obj = new LottoConnecticutLotto(_context);
-                    //obj.InsertDb();         
+                
 
                     obj = new LottoEuroMillions(_context);
                     obj.InsertDb();
@@ -58,12 +59,12 @@ namespace LottoTryDataJob
                     obj = new LottoEuroJackpot(_context);
                     obj.InsertDb();
 
-                    obj = new LottoPowerBall(_context);
-                    obj.InsertDb();
+                    //obj = new LottoConnecticutLotto(_context);
+                    //obj.InsertDb();
 
-                    obj = new LottoMegaMillions(_context);
-                    obj.InsertDb();
 
+                    obj = new LottoColorado(_context);
+                    obj.InsertDb();
 
                     obj.CloseDriver();
 

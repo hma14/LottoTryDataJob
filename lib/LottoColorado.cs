@@ -17,23 +17,25 @@ namespace LottoTryDataJob.Lib
 
         private string searchDrawDate()
         {
-            var cls = Driver.FindElement(By.ClassName("winningNumbers"));
-            var a = cls.FindElement(By.TagName("a"));
-            var href = a.GetAttribute("href");
-            var dat = href.Split('/')[7];
+            var cls = Driver.FindElement(By.ClassName("drawDate"));
+            int year = DateTime.Now.Year;
+            var arr = cls.Text.Trim().Split();
+            var month = DicDateShort[arr[1]];
+            var day = arr[2];
+            var dat = $"{year}-{month}-{day}";
             return dat;
         }
 
         private List<string> searchDrawNumbers()
         {
-            List<string> NList = new List<string>();
-            var draw = Driver.FindElements(By.ClassName("draw")).First();
-            var spans = draw.FindElements(By.TagName("span"));
-            foreach (var span in spans)
+            var numbers = Driver.FindElements(By.ClassName("drawNumber"));
+
+            List<string> list = new();
+            for (int i=0; i < 6; i++)
             {
-                NList.Add(span.Text);
+                list.Add(numbers[i].Text);
             }
-            return NList;
+            return list;
         }
 
         internal override  void InsertDb()
