@@ -47,10 +47,7 @@ builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(5002);
-});
+
 
 // Enable Hangfire Dashboard
 app.UseHangfireDashboard("/hangfire");
