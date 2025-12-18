@@ -100,3 +100,6 @@ launchSettings.json
 
 # Python Virtual Environment (if applicable)
 venv/
+
+
+/app.config
