@@ -7,17 +7,10 @@ namespace LottoTryDataJob
     using System;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
-    public class SeleniumJob
+    public class SeleniumJob(LottoDb context, ILogger<SeleniumJob> logger) // Converted to primary constructor
     {
-        private readonly LottoDb _context;
-        private readonly ILogger<SeleniumJob> _logger;
-
-        public SeleniumJob(LottoDb context, ILogger<SeleniumJob> logger)
-        {
-            _context = context;
-            _logger = logger;
-        }
-
+        private readonly LottoDb _context = context;
+        private readonly ILogger<SeleniumJob> _logger = logger;
 
         public async Task RunSeleniumScraper()
         {
