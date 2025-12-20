@@ -12,10 +12,6 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
     ContentRootPath = AppContext.BaseDirectory
 });
 
-// ✅ Add required services
-builder.Services.AddDbContext<LottoDb>();  // Make sure to configure this properly
-builder.Services.AddScoped<SeleniumJob>(); // Ensure that your job is registered
-builder.Services.AddLogging(); // Ensure logging is available
 
 // Run as Windows Service
 builder.Host.UseWindowsService(); // 👈 Important!
@@ -28,13 +24,14 @@ builder.Logging.SetMinimumLevel(LogLevel.Warning); // 👈 Reduce log output
 
 // Connection string for SQL Server
 #if false
+
 var dbPassword =
     Environment.GetEnvironmentVariable("LOTTO_DB_PASSWORD")
     ?? throw new InvalidOperationException("LOTTO_DB_PASSWORD is not set");
 
 var connectionString = $"Server=webserver, 1433;Database=lottotry;User Id=sa;Password={dbPassword};MultipleActiveResultSets=True;TrustServerCertificate=True;Connection Timeout=30;";
-#else
 
+#else
 var baseConn = builder.Configuration.GetConnectionString("LottoDbContext");
 var password = Environment.GetEnvironmentVariable("LOTTO_DB_PASSWORD");
 
@@ -42,14 +39,20 @@ if (string.IsNullOrWhiteSpace(password))
 {
     throw new InvalidOperationException("LOTTO_DB_PASSWORD is not set");
 }
-
 var connectionString = $"{baseConn};Password={password}";
 
 #endif
 
+
 // Add DbContext
 builder.Services.AddDbContext<LottoDb>(options =>
     options.UseSqlServer(connectionString)); // Ensure Microsoft.EntityFrameworkCore.SqlServer package is installed
+
+// ✅ Add required services
+builder.Services.AddScoped<SeleniumJob>(); // Ensure that your job is registered
+builder.Services.AddLogging(); // Ensure logging is available
+
+
 
 // Add Hangfire
 builder.Services.AddHangfire(config =>
