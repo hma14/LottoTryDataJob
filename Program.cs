@@ -25,12 +25,27 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.SetMinimumLevel(LogLevel.Warning); // 👈 Reduce log output
 
+
 // Connection string for SQL Server
+#if false
 var dbPassword =
     Environment.GetEnvironmentVariable("LOTTO_DB_PASSWORD")
     ?? throw new InvalidOperationException("LOTTO_DB_PASSWORD is not set");
 
 var connectionString = $"Server=webserver, 1433;Database=lottotry;User Id=sa;Password={dbPassword};MultipleActiveResultSets=True;TrustServerCertificate=True;Connection Timeout=30;";
+#else
+
+var baseConn = builder.Configuration.GetConnectionString("LottoDbContext");
+var password = Environment.GetEnvironmentVariable("LOTTO_DB_PASSWORD");
+
+if (string.IsNullOrWhiteSpace(password))
+{
+    throw new InvalidOperationException("LOTTO_DB_PASSWORD is not set");
+}
+
+var connectionString = $"{baseConn};Password={password}";
+
+#endif
 
 // Add DbContext
 builder.Services.AddDbContext<LottoDb>(options =>
@@ -44,9 +59,14 @@ builder.Services.AddHangfire(config =>
           .UseSqlServerStorage(connectionString, new SqlServerStorageOptions()));
 
 builder.Services.AddHangfireServer();
+builder.WebHost.UseUrls("http://localhost:5002");
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5002);
+});
 
 var app = builder.Build();
-
 
 
 // Enable Hangfire Dashboard
@@ -57,14 +77,9 @@ app.UseHangfireDashboard("/hangfire");
 // ✅ Register Recurring Job inside the request pipeline
 app.Lifetime.ApplicationStarted.Register(() =>
 {
-    using var scope = app.Services.CreateScope();
-
-    var job = scope.ServiceProvider.GetRequiredService<SeleniumJob>(); // Resolve SeleniumJob
-    var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
-
-    recurringJobManager.AddOrUpdate(
+    RecurringJob.AddOrUpdate<SeleniumJob>(
         "selenium-job-2", // Unique job ID
-        () => job.RunSeleniumScraper(),
+        job => job.RunSeleniumScraper(),
         //"0 10 * * *", // Cron schedule for 10:00 AM daily
         Cron.Daily,  // Equivalent to "0 0 * * *"
                      //"*/2 * * * *", // every 2 mins
