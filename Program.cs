@@ -39,7 +39,7 @@ if (string.IsNullOrWhiteSpace(password))
 {
     throw new InvalidOperationException("LOTTO_DB_PASSWORD is not set");
 }
-var connectionString = $"{baseConn};Password={password}";
+var connectionString = $"{baseConn} Password={password}";
 
 #endif
 
