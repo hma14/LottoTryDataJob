@@ -1,8 +1,10 @@
 namespace LottoTryDataJob
 {
     using LottoTryDataJob.BusinessModels;
+    using LottoTryDataJob.Lib;
     using LottoTryDataJob.Models;
     using Microsoft.EntityFrameworkCore;
+    using SeleniumLottoDataApp;
 
     public partial class LottoDb : DbContext
     {
@@ -58,6 +60,7 @@ namespace LottoTryDataJob
         public virtual DbSet<TexasCashFive> TexasCashFive { get; set; }
         public virtual DbSet<DailyGrand> DailyGrand { get; set; }
         public virtual DbSet<DailyGrand_GrandNumber> DailyGrand_GrandNumber { get; set; }
+        public virtual DbSet<FloridaPick3> FloridaPick3 { get; set; }
 #endif
 
 

@@ -7,6 +7,8 @@ namespace LottoTryDataJob
     using System;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
+    using SeleniumLottoDataApp;
+
     public class SeleniumJob(LottoDb context, ILogger<SeleniumJob> logger) // Converted to primary constructor
     {
         private readonly LottoDb _context = context;
@@ -21,7 +23,10 @@ namespace LottoTryDataJob
                 using (var driver = new ChromeDriver())
                 {
 
-                    LottoBase obj = new LottoMAX(_context);
+                    LottoBase obj = new LottoFloridaPick3(_context);
+                    obj.InsertDb();
+
+                    obj = new LottoMAX(_context);
                     obj.InsertDb();
 
                     obj = new LottoFloridaFantasy5(_context);
@@ -58,6 +63,7 @@ namespace LottoTryDataJob
 
                     obj = new LottoColorado(_context);
                     obj.InsertDb();
+
 
                     obj.CloseDriver();
 
